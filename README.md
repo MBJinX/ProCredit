@@ -1,8 +1,37 @@
-# ProCredit
+<p align="center">
+  <a href="https://mbjinx.github.io/procredit_web/">
+    <img src="docs/images/procredit.png" width="100%" alt="ProCredit: From Outcome Rewards to Progress Credit in Agentic Reinforcement Learning">
+  </a>
+</p>
 
-Run an AppWorld task, check the simulated world after each action, and see how much reward each turn earns. The same reward implementation feeds the included verl training recipe.
+<p align="center">
+  Ming Ma · Yi Zhu · Yiran Zhong · Feida Zhu · Chonghan Liu<br>
+  Pengkun Jiao · Qichao Wang · Yanhao Jia · Tianming Yang · Steven Hoi
+</p>
 
-## Run your first task
+<p align="center">
+  <strong><a href="https://arxiv.org/abs/2609.27532">arXiv paper</a></strong> &nbsp;·&nbsp;
+  <strong><a href="https://mbjinx.github.io/procredit_web/">Project website</a></strong> &nbsp;·&nbsp;
+  <a href="#quick-start">Quick start</a> &nbsp;·&nbsp;
+  <a href="#results">Results</a> &nbsp;·&nbsp;
+  <a href="#citation">BibTeX</a>
+</p>
+
+**How much of a task did an agent get right before it stopped?** ProCredit reruns the task’s acceptance checks after each tool call. It uses changes in the fraction of checks passing to assign rewards to individual turns, alongside the final outcome. This repository includes the AppWorld runner and the verl training recipe used to implement the method.
+
+### A failed task with two correct changes
+
+The agent needs to move the wake-up alarm to 06:00 and turn off both Gym and Work. It changes the time and switches off Gym, then declares the task complete while Work is still on. The final outcome is zero. The progress trace records exactly when each of the two checks started passing.
+
+<p align="center">
+  <a href="https://mbjinx.github.io/procredit_web/#replay">
+    <img src="docs/images/alarm-replay.gif" width="720" alt="Four-turn alarm example. Reading the alarms passes zero checks. Moving Wake-up to 06:00 passes one. Switching off Gym passes two. Work stays on, so the task fails.">
+  </a>
+</p>
+
+[Play both examples on the project website →](https://mbjinx.github.io/procredit_web/#replay) · For the offline replay, open `ui/index.html` in a browser or run `./run.sh ui` after copying `.env.example` to `.env`. The local viewer is available at `http://127.0.0.1:8080` by default.
+
+## Quick start
 
 Use Linux, Bash, Git and Python 3.11 or 3.12. The example runs on CPU and needs no model or API key.
 
@@ -34,9 +63,20 @@ APPWORLD_MAX_TURNS=12
 
 The endpoint must support `POST /chat/completions`. It receives the one-shot ReAct prompt, the simulated task and the tool observations. The runner executes the final Python block from each reply and stops when the task is marked complete or reaches the turn limit. Fill in a key only if your endpoint requires one. Keep your own settings in the ignored `.env`. For a second configuration, use `ENV_FILE=/path/to/another.env ./run.sh`. The launcher reads trusted Bash assignments.
 
-## View the replay
+## Results
 
-Open `ui/index.html` directly, or run `./run.sh ui` and open `http://127.0.0.1:8080`. Change `UI_PORT` to use another port. The page contains two illustrative alarm tasks. Switch examples or pause the animation to inspect an action and the checks it changed. All assets are local. The server exposes only the `ui/` directory.
+AppWorld task goal completion (%, mean ± standard deviation across three training runs). Each cell reports the share of tasks for which every required check passes.
+
+| Test set | Qwen3.5 model | GRPO | ProCredit |
+| :--- | :--- | ---: | ---: |
+| Normal | 4B | 66.32 ± 1.27 | **71.53 ± 0.48** |
+| Normal | 9B | 72.79 ± 0.96 | **78.15 ± 2.61** |
+| Normal | 35B-A3B | 75.00 ± 0.61 | **78.65 ± 0.85** |
+| Challenge | 4B | 46.50 ± 0.66 | **52.96 ± 0.50** |
+| Challenge | 9B | 60.77 ± 2.35 | **63.85 ± 0.45** |
+| Challenge | 35B-A3B | 66.73 ± 3.66 | **68.11 ± 3.95** |
+
+The interactive charts also include scenario goal completion and the remaining baselines. [Explore the full results →](https://mbjinx.github.io/procredit_web/#results)
 
 ## Train with verl
 
@@ -68,5 +108,22 @@ The single-node example builds the selected prompts, starts a loopback AppWorld 
 | [Advantage estimator](verl/recipe/appworld_tool/aw_gigpo.py) | Combines task-level and turn-level credit |
 
 Progress is the fraction of checks labelled `no_op_fail` that currently pass. The default reward is half the change in progress at each turn, plus the binary outcome on the final turn. The training entry uses task grouping, discount 1, mean-centered turn returns, and weight 1 for the turn-level advantage. It disables adaptive, routed-discount and token-spread ablations.
+
+## Citation
+
+```bibtex
+@article{ma2026procredit,
+  title   = {ProCredit: From Outcome Rewards to Progress Credit
+             in Agentic Reinforcement Learning},
+  author  = {Ma, Ming and Zhu, Yi and Zhong, Yiran and Zhu, Feida and
+             Liu, Chonghan and Jiao, Pengkun and Wang, Qichao and
+             Jia, Yanhao and Yang, Tianming and Hoi, Steven},
+  journal = {arXiv preprint arXiv:2609.27532},
+  year    = {2026},
+  url     = {https://arxiv.org/abs/2609.27532}
+}
+```
+
+## License
 
 The release code uses Apache-2.0. The bundled verl tree retains its upstream license and notices. Downloaded AppWorld code and data are subject to their upstream redistribution terms. [License](LICENSE) · [verl notices](verl/Notice.txt) · [AppWorld license](https://github.com/stonybrooknlp/appworld#license) · [GiGPO](https://arxiv.org/abs/2505.10978)
