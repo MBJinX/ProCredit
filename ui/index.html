@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ProCredit reruns a task's own acceptance checks after every turn and turns the verified progress into training credit for long-horizon language model agents.">
+  <meta name="theme-color" content="#0a1322">
+  <meta property="og:title" content="ProCredit: From Outcome Rewards to Progress Credit in Agentic Reinforcement Learning">
+  <meta property="og:description" content="An attempt can fail. Its progress can still teach. Interactive examples of per-turn credit.">
+  <title>ProCredit · From Outcome Rewards to Progress Credit</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='9' fill='%23152238'/%3E%3Cpath d='M10 29V22H17V16H24V10H31' fill='none' stroke='%2350d1c4' stroke-width='4'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+  <script src="main.js" defer></script>
+</head>
+<body>
+  <div class="scroll-progress" aria-hidden="true"><i id="scroll-bar"></i></div>
+
+  <div class="topbar-wrap" id="topbar">
+    <div class="topbar">
+      <a class="wordmark" href="#top" aria-label="ProCredit, back to top"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="9"/><path d="M10 29V22H17V16H24V10H31"/></svg>ProCredit</a>
+      <nav aria-label="Page sections"><a href="#replay">Replay</a></nav>
+    </div>
+  </div>
+
+  <header class="hero" id="top">
+    <canvas id="hero-canvas" aria-hidden="true"></canvas>
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="hero-inner">
+      <h1 class="hero-title" aria-label="ProCredit"><span class="split" data-split>ProCredit</span></h1>
+      <p class="paper-title reveal-up" style="--d:5">From <span class="strike-word">Outcome Rewards</span> to <span class="glow-word">Progress Credit</span><br class="wide-break"> in Agentic Reinforcement Learning</p>
+      <p class="hero-message reveal-up" style="--d:11">An attempt can fail.<br> <em>Its progress can still teach.</em></p>
+    </div>
+    <a class="scroll-cue" href="#replay" aria-label="Scroll to the replay"><span></span></a>
+  </header>
+
+  <main id="main">
+
+    <!-- ============ Replay ============ -->
+    <section id="replay" class="section" aria-labelledby="replay-title">
+      <div class="section-head reveal">
+        <p class="eyebrow">Examples</p>
+        <h2 id="replay-title">Watch the checks turn progress into credit</h2>
+        <p>An agent works on a phone task turn by turn. After every turn, the task’s acceptance checks run again on the new state. When the attempt ends, compare the credit GRPO and ProCredit give each turn.</p>
+      </div>
+
+      <div class="case-tabs reveal" role="tablist" aria-label="Examples">
+        <button type="button" role="tab" data-case="0" aria-selected="true"><span>01</span>Same failure, different progress</button>
+        <button type="button" role="tab" data-case="1" aria-selected="false"><span>02</span>A success with a slip</button>
+      </div>
+
+      <div class="stage reveal" id="stage">
+        <div class="stage-head">
+          <div class="case-title"><span class="case-no" id="case-no">01</span><div><h3 id="case-name"></h3><p id="case-sub"></p></div></div>
+          <div class="request"><span class="request-who"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>User request</span><p id="case-request"></p></div>
+        </div>
+
+        <ol class="tracker" id="tracker" aria-label="Turns"></ol>
+
+        <div class="stage-grid">
+          <div class="panel convo-panel">
+            <div class="panel-head"><span class="ph-title"><i class="dot agent"></i>Agent <span class="arrows">⇄</span> Environment</span><span class="ph-status" id="agent-status">Ready</span></div>
+            <div class="convo" id="convo" aria-live="polite"></div>
+          </div>
+
+          <div class="panel phone-panel">
+            <div class="panel-head"><span class="ph-title"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M11 18h2"/></svg>Device state</span></div>
+            <div class="phone" id="phone">
+              <div class="phone-notch"></div>
+              <div class="phone-status"><span>9:41</span><span class="bars"><i></i><i></i><i></i></span></div>
+              <div class="phone-app">
+                <p class="app-title">Alarms</p>
+                <ul class="app-list" id="app-list"></ul>
+                <div class="toast" id="toast"></div>
+              </div>
+            </div>
+            <p class="phone-caption" id="phone-caption">Device state updates after each tool return.</p>
+          </div>
+
+          <div class="panel ledger-panel">
+            <div class="panel-head"><span class="ph-title"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V14H9V9H14V5H20"/></svg>Acceptance checks</span><span class="ph-status" id="phi-status">Φ = 0/3</span></div>
+            <ul class="checks" id="checks"></ul>
+            <div class="stair-wrap"><svg class="stair" id="stair" viewBox="0 0 320 120" preserveAspectRatio="none" aria-label="Progress after each turn"></svg></div>
+            <div class="scoring" id="scoring" hidden>
+              <p class="scoring-title">Credit per turn <span>after the attempt ends</span></p>
+              <div class="verdicts">
+                <div class="verdict grpo" id="v-grpo"><span>GRPO</span><strong></strong></div>
+                <div class="verdict pro" id="v-pro"><span>ProCredit</span><strong></strong></div>
+              </div>
+              <div class="credit-rows" id="credit-rows"></div>
+              <p class="credit-key"><span><i class="key pos"></i>made more likely</span><span><i class="key neg"></i>made less likely</span></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="controls">
+          <button type="button" class="ctl primary" id="btn-play" aria-label="Pause"><svg viewBox="0 0 24 24" aria-hidden="true"><path class="i-pause" d="M8 5v14M16 5v14"/><path class="i-play" d="M7 5l12 7-12 7z"/></svg><span>Pause</span></button>
+          <button type="button" class="ctl" id="btn-replay"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.4-5.7M4 4v5h5"/></svg>Replay</button>
+          <span class="ctl-count" id="turn-count">0 / 0</span>
+          <span class="ctl-spacer"></span>
+          <label class="ctl-speed">Speed <select id="sel-speed"><option value="1">1×</option><option value="1.6" selected>1.6×</option><option value="2.5">2.5×</option><option value="4">4×</option></select></label>
+          <span class="ctl-note">Illustrative replay · credit computed with the paper’s equations (c = 0.5, γ = 1)</span>
+        </div>
+        <div class="timeline"><i id="timeline-bar"></i></div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

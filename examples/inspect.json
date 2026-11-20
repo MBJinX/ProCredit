@@ -1,0 +1,4 @@
+[
+  "apps = apis.api_docs.show_app_descriptions()",
+  "print(len(apps))"
+]
