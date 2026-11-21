@@ -1,0 +1,57 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the paper below."
+title: "ProCredit"
+repository-code: "https://github.com/MBJinX/ProCredit"
+url: "https://mbjinx.github.io/procredit_web/"
+license: Apache-2.0
+authors:
+  - family-names: Ma
+    given-names: Ming
+  - family-names: Zhu
+    given-names: Yi
+  - family-names: Zhong
+    given-names: Yiran
+  - family-names: Zhu
+    given-names: Feida
+  - family-names: Liu
+    given-names: Chonghan
+  - family-names: Jiao
+    given-names: Pengkun
+  - family-names: Wang
+    given-names: Qichao
+  - family-names: Jia
+    given-names: Yanhao
+  - family-names: Yang
+    given-names: Tianming
+  - family-names: Hoi
+    given-names: Steven
+preferred-citation:
+  type: article
+  title: "ProCredit: From Outcome Rewards to Progress Credit in Agentic Reinforcement Learning"
+  journal: "arXiv preprint arXiv:2609.27532"
+  year: 2026
+  url: "https://arxiv.org/abs/2609.27532"
+  identifiers:
+    - type: other
+      value: "arXiv:2609.27532"
+  authors:
+    - family-names: Ma
+      given-names: Ming
+    - family-names: Zhu
+      given-names: Yi
+    - family-names: Zhong
+      given-names: Yiran
+    - family-names: Zhu
+      given-names: Feida
+    - family-names: Liu
+      given-names: Chonghan
+    - family-names: Jiao
+      given-names: Pengkun
+    - family-names: Wang
+      given-names: Qichao
+    - family-names: Jia
+      given-names: Yanhao
+    - family-names: Yang
+      given-names: Tianming
+    - family-names: Hoi
+      given-names: Steven
